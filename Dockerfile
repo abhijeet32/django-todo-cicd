@@ -1,18 +1,22 @@
-#use the official Python image
-FROM python:3
+#step 1: Use an official Python runtime as a parent image
+FROM python:3.9-slim
 
-# Set the working directory in the container
-WORKDIR /app
+# Step 2: Set the working directory in the container
+WORKDIR /usr/src/app
 
-# Copy the current directory contents into the container at /app
-COPY requirements.txt .
+# Step 3: Copy the requirements.txt file into the container
+COPY requirements.txt ./
 
-# Install dependencies from requirements.txt (if available)
-RUN pip install -r requirements.txt
+# Step 4: Install the required packages
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Run Django migrations (only when container is run, not at build time)
+# Step 5: Copy the current directory contents into the container
+COPY . .
+
+# Step 6: Expose port 8000 for Django development server
 EXPOSE 8000
 
-# Run the Django development server
+# Step 7: Run Django migrations and start the development server
+CMD ["python", "manage.py", "migrate"]
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
